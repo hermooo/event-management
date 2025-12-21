@@ -11,14 +11,13 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
 
-    const body = await request.json();
-    const { sessionId } = body;
+    const sessionId = request.cookies.get("session_id")?.value;
 
     if (!sessionId) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "Session ID is required",
+          error: "No active session found",
         },
         { status: 400 },
       );

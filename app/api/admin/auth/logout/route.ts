@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { AdminSession } from "@/models";
 import type { ApiResponse } from "@/types";
@@ -7,18 +7,17 @@ import type { ApiResponse } from "@/types";
  * POST /api/admin/auth/logout
  * Delete an admin session (logout)
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     await dbConnect();
 
-    const body = await request.json();
-    const { sessionId } = body;
+    const sessionId = request.cookies.get("session_id")?.value;
 
     if (!sessionId) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "Session ID is required",
+          error: "No active session found",
         },
         { status: 400 },
       );
