@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
 import dbConnect from "@/lib/mongodb";
 import { verifyPassword } from "@/lib/auth/password";
 import User from "@/models/User";
-import Session from "@/models/Session";
-import type { LoginDto, ApiResponse, IUser, ISession } from "@/types";
+import UserSession from "@/models/UserSession";
+import type { LoginDto, ApiResponse, IUser, IUserSession } from "@/types";
+import { UAParser } from "ua-parser-js";
 
 /**
  * POST /api/auth/login
@@ -61,12 +63,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Terminate existing sessions for this user (Single session policy)
+    await UserSession.deleteMany({ userId: user._id.toString() });
+
+    // Get tracking info
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || "";
+    const ipAddress = headersList.get("x-forwarded-for")?.split(",")[0] || "unknown";
+
+    // Parse user agent for device info
+    const parser = new UAParser(userAgent);
+    const device = parser.getDevice();
+    const os = parser.getOS();
+    const deviceModel = device.model
+      ? `${device.vendor || ""} ${device.model}`.trim()
+      : `${os.name || ""} ${os.version || ""}`.trim() || "Unknown Device";
+
     // Create session (expires in 7 days)
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
-    const session = await Session.create({
+    const session = await UserSession.create({
       userId: user._id.toString(),
+      ipAddress,
+      deviceModel,
+      userAgent,
       expiresAt,
     });
 
@@ -76,7 +97,7 @@ export async function POST(request: NextRequest) {
     const { password: _password, ...userWithoutPassword } = userObject;
 
     // Create response with session cookie
-    const response = NextResponse.json<ApiResponse<{ user: IUser; session: ISession }>>(
+    const response = NextResponse.json<ApiResponse<{ user: IUser; session: IUserSession }>>(
       {
         success: true,
         data: {
@@ -84,6 +105,9 @@ export async function POST(request: NextRequest) {
           session: {
             _id: session._id.toString(),
             userId: session.userId,
+            ipAddress: session.ipAddress,
+            deviceModel: session.deviceModel,
+            userAgent: session.userAgent,
             expiresAt: session.expiresAt,
             createdAt: session.createdAt,
           },
@@ -94,6 +118,14 @@ export async function POST(request: NextRequest) {
 
     // Set session cookie
     response.cookies.set("session_id", session._id.toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: expiresAt,
+      path: "/",
+    });
+
+    response.cookies.set("session_type", "user", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
