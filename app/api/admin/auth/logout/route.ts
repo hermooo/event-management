@@ -24,7 +24,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Delete the session
-    await AdminSession.findByIdAndDelete(sessionId);
+    const deletedSession = await AdminSession.findByIdAndDelete(sessionId);
+
+    if (!deletedSession) {
+      return NextResponse.json<ApiResponse>(
+        {
+          success: false,
+          error: "Session not found",
+        },
+        { status: 404 },
+      );
+    }
 
     const response = NextResponse.json<ApiResponse>(
       {
