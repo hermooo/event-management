@@ -10,7 +10,9 @@ const seedAdmin = async () => {
   const password = process.env.ADMIN_PASSWORD;
 
   if (!name || !email || !password) {
-    throw new Error("Please provide ADMIN_NAME, ADMIN_EMAIL, and ADMIN_PASSWORD in the environment variables");
+    throw new Error(
+      "Please provide ADMIN_NAME, ADMIN_EMAIL, and ADMIN_PASSWORD in the environment variables"
+    );
   }
 
   const existingAdmin = await Admin.findOne({ email });

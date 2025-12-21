@@ -47,7 +47,7 @@ const UserSchema = new Schema<IUser>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Compound index for organization + email uniqueness

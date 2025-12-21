@@ -54,7 +54,7 @@ const EventSchema = new Schema<IEvent>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Compound unique index for organization + slug

@@ -46,7 +46,7 @@ const RegistrationSchema = new Schema<IRegistration>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Compound unique index to prevent duplicate registrations

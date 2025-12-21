@@ -33,7 +33,7 @@ const AdminSessionSchema = new Schema<IAdminSession>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Compound index for admin + expiration queries

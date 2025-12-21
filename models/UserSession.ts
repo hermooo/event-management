@@ -33,7 +33,7 @@ const UserSessionSchema = new Schema<IUserSession>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Compound index for user + expiration queries

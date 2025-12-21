@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: { message: "Logged out successfully" },
       },
-      { status: 200 },
+      { status: 200 }
     );
 
     // Clear cookies
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "Internal server error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

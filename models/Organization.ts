@@ -26,7 +26,7 @@ const OrganizationSchema = new Schema<IOrganization>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Prevent model recompilation during development

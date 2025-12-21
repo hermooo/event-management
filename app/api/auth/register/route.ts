@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "Missing required fields: organizationId, name, email, password",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: passwordValidation.error,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "User with this email already exists",
         },
-        { status: 409 },
+        { status: 409 }
       );
     }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: userWithoutPassword as unknown as IUser,
       },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error: unknown) {
     console.error("Registration error:", error);
@@ -87,13 +87,15 @@ export async function POST(request: NextRequest) {
       error.errors &&
       typeof error.errors === "object"
     ) {
-      const messages = Object.values(error.errors as Record<string, { message: string }>).map((err) => err.message);
+      const messages = Object.values(error.errors as Record<string, { message: string }>).map(
+        (err) => err.message
+      );
       return NextResponse.json<ApiResponse>(
         {
           success: false,
           error: messages,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -104,7 +106,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "User with this email already exists in this organization",
         },
-        { status: 409 },
+        { status: 409 }
       );
     }
 
@@ -113,7 +115,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "Internal server error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

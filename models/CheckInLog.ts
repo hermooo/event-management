@@ -40,7 +40,7 @@ const CheckInLogSchema = new Schema<ICheckInLog>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Compound index for event-based queries
@@ -56,6 +56,7 @@ CheckInLogSchema.index({ staffId: 1, timestamp: -1 });
 CheckInLogSchema.index({ registrationId: 1, timestamp: -1 });
 
 // Prevent model recompilation during development
-const CheckInLog: Model<ICheckInLog> = models.CheckInLog || mongoose.model<ICheckInLog>("CheckInLog", CheckInLogSchema);
+const CheckInLog: Model<ICheckInLog> =
+  models.CheckInLog || mongoose.model<ICheckInLog>("CheckInLog", CheckInLogSchema);
 
 export default CheckInLog;

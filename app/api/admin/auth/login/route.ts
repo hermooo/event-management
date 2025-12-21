@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     if (!email || !password) {
       return NextResponse.json<ApiResponse>(
         { success: false, error: "Email and password are required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
           success: false,
           error: "Invalid email or password",
         },
-        { status: 401 },
+        { status: 401 }
       );
     }
 
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
           success: false,
           error: "Invalid email or password",
         },
-        { status: 401 },
+        { status: 401 }
       );
     }
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         },
         {
           status: 401,
-        },
+        }
       );
     }
 
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
           },
         },
       },
-      { status: 200 },
+      { status: 200 }
     );
 
     // Set session cookie
@@ -138,7 +138,7 @@ export async function POST(request: Request) {
         success: false,
         error: "Internal server error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

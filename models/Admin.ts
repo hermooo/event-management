@@ -33,7 +33,7 @@ const AdminSchema = new Schema<IAdmin>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Prevent model recompilation during development
