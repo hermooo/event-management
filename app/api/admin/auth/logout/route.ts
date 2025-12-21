@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { AdminSession } from "@/models";
 import type { ApiResponse } from "@/types";
+import { Types } from "mongoose";
 
 /**
  * POST /api/admin/auth/logout
@@ -13,27 +14,9 @@ export async function POST(request: NextRequest) {
 
     const sessionId = request.cookies.get("session_id")?.value;
 
-    if (!sessionId) {
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: "No active session found",
-        },
-        { status: 400 },
-      );
-    }
-
-    // Delete the session
-    const deletedSession = await AdminSession.findByIdAndDelete(sessionId);
-
-    if (!deletedSession) {
-      return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: "Session not found",
-        },
-        { status: 404 },
-      );
+    if (sessionId && Types.ObjectId.isValid(sessionId)) {
+      // Attempt to delete the session from DB if it exists
+      await AdminSession.findByIdAndDelete(sessionId);
     }
 
     const response = NextResponse.json<ApiResponse>(
