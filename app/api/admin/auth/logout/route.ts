@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import { AdminSession } from "@/models";
 import type { ApiResponse } from "@/types";
+import { Types } from "mongoose";
 
 /**
  * POST /api/admin/auth/logout
@@ -13,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     const sessionId = request.cookies.get("session_id")?.value;
 
-    if (sessionId) {
+    if (sessionId && Types.ObjectId.isValid(sessionId)) {
       // Attempt to delete the session from DB if it exists
       await AdminSession.findByIdAndDelete(sessionId);
     }
