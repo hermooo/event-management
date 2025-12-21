@@ -1,12 +1,12 @@
 import { cookies } from "next/headers";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
-import Session from "@/models/Session";
+import UserSession from "@/models/UserSession";
 import type { IUser } from "@/types";
 
 export interface AuthResult {
   user: IUser;
-  organizationId: string;
+  organizationId?: string;
   sessionId: string;
 }
 
@@ -15,7 +15,7 @@ export interface AuthResult {
  * Throws an error if the user is not authenticated
  * @returns User and organization information
  */
-export async function requireAuth(): Promise<AuthResult> {
+export async function requireUserAuth(): Promise<AuthResult> {
   await dbConnect();
 
   const cookieStore = await cookies();
@@ -26,7 +26,7 @@ export async function requireAuth(): Promise<AuthResult> {
   }
 
   // Find active session
-  const session = await Session.findOne({
+  const session = await UserSession.findOne({
     _id: sessionId,
     expiresAt: { $gt: new Date() },
   });
@@ -60,7 +60,7 @@ export async function requireAuth(): Promise<AuthResult> {
  */
 export async function getCurrentUser(): Promise<AuthResult | null> {
   try {
-    return await requireAuth();
+    return await requireUserAuth();
   } catch {
     return null;
   }
@@ -72,7 +72,7 @@ export async function getCurrentUser(): Promise<AuthResult | null> {
  */
 export async function isAuthenticated(): Promise<boolean> {
   try {
-    await requireAuth();
+    await requireUserAuth();
     return true;
   } catch {
     return false;

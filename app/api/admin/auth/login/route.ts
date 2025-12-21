@@ -1,37 +1,32 @@
-import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import dbConnect from "@/lib/mongodb";
 import { verifyPassword } from "@/lib/auth/password";
-import User from "@/models/User";
-import UserSession from "@/models/UserSession";
-import type { LoginDto, ApiResponse, IUser, IUserSession } from "@/types";
+import dbConnect from "@/lib/mongodb";
+import { Admin, AdminSession } from "@/models";
+import { AdminLoginDto, ApiResponse, IAdminSession } from "@/types";
+import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
 
 /**
- * POST /api/auth/login
- * Authenticate a user and create a session
+ * POST /api/admin/auth/login
+ * Authenticate an admin and create a session
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     await dbConnect();
 
-    const body: LoginDto = await request.json();
+    const body: AdminLoginDto = await request.json();
     const { email, password } = body;
 
-    // Validate required fields
     if (!email || !password) {
       return NextResponse.json<ApiResponse>(
-        {
-          success: false,
-          error: "Email and password are required",
-        },
+        { success: false, error: "Email and password are required" },
         { status: 400 },
       );
     }
 
-    // Find user by email (include password for verification)
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
+    const admin = await Admin.findOne({ email }).select("+password");
+
+    if (!admin) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
@@ -41,8 +36,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify password
-    if (!user.password) {
+    if (!admin.password) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
@@ -52,19 +46,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isPasswordValid = await verifyPassword(password, user.password);
+    const isPasswordValid = await verifyPassword(password, admin.password);
+
     if (!isPasswordValid) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
           error: "Invalid email or password",
         },
-        { status: 401 },
+        {
+          status: 401,
+        },
       );
     }
 
-    // Terminate existing sessions for this user (Single session policy)
-    await UserSession.deleteMany({ userId: user._id.toString() });
+    // Terminate existing sessions for this admin (Single session policy)
+    await AdminSession.deleteMany({ adminId: admin._id.toString() });
 
     // Get tracking info
     const headersList = await headers();
@@ -79,32 +76,32 @@ export async function POST(request: NextRequest) {
       ? `${device.vendor || ""} ${device.model}`.trim()
       : `${os.name || ""} ${os.version || ""}`.trim() || "Unknown Device";
 
-    // Create session (expires in 7 days)
+    // Create session
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
-    const session = await UserSession.create({
-      userId: user._id.toString(),
+    const session = await AdminSession.create({
+      adminId: admin._id.toString(),
       ipAddress,
       deviceModel,
       userAgent,
       expiresAt,
     });
 
-    // Convert user to plain object and remove password
-    const userObject = user.toObject();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _password, ...userWithoutPassword } = userObject;
-
-    // Create response with session cookie
-    const response = NextResponse.json<ApiResponse<{ user: IUser; session: IUserSession }>>(
+    const response = NextResponse.json<
+      ApiResponse<{ admin: { _id: string; name: string; email: string }; session: IAdminSession }>
+    >(
       {
         success: true,
         data: {
-          user: userWithoutPassword as unknown as IUser,
+          admin: {
+            _id: admin._id.toString(),
+            name: admin.name,
+            email: admin.email,
+          },
           session: {
             _id: session._id.toString(),
-            userId: session.userId,
+            adminId: session.adminId,
             ipAddress: session.ipAddress,
             deviceModel: session.deviceModel,
             userAgent: session.userAgent,
@@ -125,7 +122,7 @@ export async function POST(request: NextRequest) {
       path: "/",
     });
 
-    response.cookies.set("session_type", "user", {
+    response.cookies.set("session_type", "admin", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

@@ -10,9 +10,12 @@ export interface IUser {
   createdAt: Date | string;
 }
 
-export interface ISession {
+export interface IUserSession {
   _id: string;
   userId: string;
+  ipAddress?: string;
+  deviceModel?: string;
+  userAgent?: string;
   expiresAt: Date | string;
   createdAt: Date | string;
 }

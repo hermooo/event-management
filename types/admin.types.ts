@@ -11,3 +11,13 @@ export interface AdminLoginDto {
   email: string;
   password: string;
 }
+
+export interface IAdminSession {
+  _id: string;
+  adminId: string;
+  ipAddress?: string;
+  deviceModel?: string;
+  userAgent?: string;
+  expiresAt: Date | string;
+  createdAt: Date | string;
+}

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
-import UserSession from "@/models/UserSession";
+import { AdminSession } from "@/models";
 import type { ApiResponse } from "@/types";
 
 /**
- * POST /api/auth/logout
- * Delete a user session (logout)
+ * POST /api/admin/auth/logout
+ * Delete an admin session (logout)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Delete the session
-    const deletedSession = await UserSession.findByIdAndDelete(sessionId);
+    const deletedSession = await AdminSession.findByIdAndDelete(sessionId);
 
     if (!deletedSession) {
       return NextResponse.json<ApiResponse>(
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json<ApiResponse>(
       {
         success: true,
-        data: { message: "Logged out successfully" },
+        data: { message: "Admin logged out successfully" },
       },
       { status: 200 },
     );
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error: unknown) {
-    console.error("Logout error:", error);
+    console.error("Admin logout error:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
