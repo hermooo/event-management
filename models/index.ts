@@ -1,4 +1,5 @@
 // Export all models
+export { default as Admin } from "./Admin";
 export { default as Organization } from "./Organization";
 export { default as User } from "./User";
 export { default as Session } from "./Session";
@@ -7,6 +8,7 @@ export { default as Registration } from "./Registration";
 export { default as CheckInLog } from "./CheckInLog";
 
 // Export all interfaces
+export type { IAdmin } from "./Admin";
 export type { IOrganization } from "./Organization";
 export type { IUser, UserRole } from "./User";
 export type { ISession } from "./Session";

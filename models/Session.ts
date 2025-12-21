@@ -4,6 +4,7 @@ export interface ISession extends Document {
   userId: string;
   expiresAt: Date;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const SessionSchema = new Schema<ISession>(
@@ -12,16 +13,14 @@ const SessionSchema = new Schema<ISession>(
       type: String,
       required: [true, "User ID is required"],
       ref: "User",
-      index: true,
     },
     expiresAt: {
       type: Date,
       required: [true, "Expiration date is required"],
-      index: true, // For efficient cleanup of expired sessions
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 

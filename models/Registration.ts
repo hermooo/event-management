@@ -8,6 +8,7 @@ export interface IRegistration extends Document {
   checkedIn: boolean;
   checkedInAt?: Date;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const RegistrationSchema = new Schema<IRegistration>(
@@ -16,17 +17,15 @@ const RegistrationSchema = new Schema<IRegistration>(
       type: String,
       required: [true, "Organization ID is required"],
       ref: "Organization",
-      index: true,
     },
     eventId: {
       type: String,
       required: [true, "Event ID is required"],
       ref: "Event",
-      index: true,
     },
     name: {
       type: String,
-      required: [true, "Registrant name is required"],
+      required: [true, "Name is required"],
       trim: true,
       maxlength: [200, "Name cannot be more than 200 characters"],
     },
@@ -40,14 +39,13 @@ const RegistrationSchema = new Schema<IRegistration>(
     checkedIn: {
       type: Boolean,
       default: false,
-      index: true,
     },
     checkedInAt: {
       type: Date,
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 

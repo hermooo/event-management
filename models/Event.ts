@@ -9,6 +9,7 @@ export interface IEvent extends Document {
   capacity?: number;
   organizerId: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const EventSchema = new Schema<IEvent>(
@@ -17,25 +18,23 @@ const EventSchema = new Schema<IEvent>(
       type: String,
       required: [true, "Organization ID is required"],
       ref: "Organization",
-      index: true,
     },
     slug: {
       type: String,
-      required: [true, "Event slug is required"],
+      required: [true, "Slug is required"],
       lowercase: true,
       trim: true,
       match: [/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"],
     },
     title: {
       type: String,
-      required: [true, "Event title is required"],
+      required: [true, "Title is required"],
       trim: true,
       maxlength: [200, "Title cannot be more than 200 characters"],
     },
     date: {
       type: Date,
-      required: [true, "Event date is required"],
-      index: true,
+      required: [true, "Date is required"],
     },
     location: {
       type: String,
@@ -51,11 +50,10 @@ const EventSchema = new Schema<IEvent>(
       type: String,
       required: [true, "Organizer ID is required"],
       ref: "User",
-      index: true,
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 

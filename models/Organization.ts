@@ -4,28 +4,28 @@ export interface IOrganization extends Document {
   name: string;
   slug: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const OrganizationSchema = new Schema<IOrganization>(
   {
     name: {
       type: String,
-      required: [true, "Organization name is required"],
+      required: [true, "Name is required"],
       trim: true,
       maxlength: [200, "Name cannot be more than 200 characters"],
     },
     slug: {
       type: String,
-      required: [true, "Organization slug is required"],
+      required: [true, "Slug is required"],
       unique: true,
       lowercase: true,
       trim: true,
       match: [/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"],
-      index: true,
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 

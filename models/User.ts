@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export type UserRole = "admin" | "organizer" | "staff";
+export type UserRole = "organizer" | "staff";
 
 export interface IUser extends Document {
   organizationId: string;
@@ -9,6 +9,7 @@ export interface IUser extends Document {
   password: string;
   role: UserRole;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -17,11 +18,10 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: [true, "Organization ID is required"],
       ref: "Organization",
-      index: true,
     },
     name: {
       type: String,
-      required: [true, "User name is required"],
+      required: [true, "Name is required"],
       trim: true,
       maxlength: [200, "Name cannot be more than 200 characters"],
     },
@@ -32,7 +32,6 @@ const UserSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
-      index: true,
     },
     password: {
       type: String,
@@ -41,14 +40,13 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["admin", "organizer", "staff"],
+      enum: ["organizer", "staff"],
       default: "staff",
-      required: [true, "User role is required"],
-      index: true,
+      required: [true, "Role is required"],
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );
 

@@ -6,6 +6,8 @@ export interface ICheckInLog extends Document {
   eventId: string;
   staffId: string;
   timestamp: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const CheckInLogSchema = new Schema<ICheckInLog>(
@@ -14,35 +16,30 @@ const CheckInLogSchema = new Schema<ICheckInLog>(
       type: String,
       required: [true, "Organization ID is required"],
       ref: "Organization",
-      index: true,
     },
     registrationId: {
       type: String,
       required: [true, "Registration ID is required"],
       ref: "Registration",
-      index: true,
     },
     eventId: {
       type: String,
       required: [true, "Event ID is required"],
       ref: "Event",
-      index: true,
     },
     staffId: {
       type: String,
       required: [true, "Staff ID is required"],
       ref: "User",
-      index: true,
     },
     timestamp: {
       type: Date,
       required: [true, "Timestamp is required"],
       default: Date.now,
-      index: true,
     },
   },
   {
-    timestamps: false, // Using custom timestamp field
+    timestamps: true,
   },
 );
 
