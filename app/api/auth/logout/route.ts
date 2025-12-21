@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
-import Session from "@/models/Session";
+import UserSession from "@/models/UserSession";
 import type { ApiResponse } from "@/types";
 
 /**
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Delete the session
-    const deletedSession = await Session.findByIdAndDelete(sessionId);
+    const deletedSession = await UserSession.findByIdAndDelete(sessionId);
 
     if (!deletedSession) {
       return NextResponse.json<ApiResponse>(
@@ -37,13 +37,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json<ApiResponse>(
+    const response = NextResponse.json<ApiResponse>(
       {
         success: true,
         data: { message: "Logged out successfully" },
       },
       { status: 200 },
     );
+
+    // Clear cookies
+    response.cookies.delete("session_id");
+    response.cookies.delete("session_type");
+
+    return response;
   } catch (error: unknown) {
     console.error("Logout error:", error);
     return NextResponse.json<ApiResponse>(
