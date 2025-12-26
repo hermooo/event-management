@@ -13,11 +13,18 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, slug } = body;
 
+    if (!name || !slug) {
+      return NextResponse.json({ error: "Name and slug are required" }, { status: 400 });
+    }
+
     const trimmedName = name.trim();
     const trimmedSlug = slug.trim();
 
     if (!trimmedName || !trimmedSlug) {
-      return NextResponse.json({ error: "Name and slug are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Name and slug cannot be empty or whitespace" },
+        { status: 400 }
+      );
     }
 
     if (!validateSlug(trimmedSlug)) {
