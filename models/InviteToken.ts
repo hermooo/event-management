@@ -33,5 +33,8 @@ const InviteTokenSchema = new Schema<IInviteToken>(
   { timestamps: true }
 );
 
+// Index for token validation queries
+InviteTokenSchema.index({ tokenHash: 1, usedAt: 1, expiresAt: 1 });
+
 export const InviteToken: Model<IInviteToken> =
   mongoose.models.InviteToken || mongoose.model<IInviteToken>("InviteToken", InviteTokenSchema);
