@@ -55,3 +55,8 @@ export function validatePasswordStrength(password: string): {
 
   return { isValid: true };
 }
+
+export const validateSlug = (slug: string): boolean => {
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  return slugRegex.test(slug);
+};

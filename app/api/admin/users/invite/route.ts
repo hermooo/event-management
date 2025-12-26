@@ -45,15 +45,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid organization ID" }, { status: 400 });
     }
 
-    // Start Session and Transaction
+    // Start Session
     const session = await mongoose.startSession();
-    session.startTransaction();
+
+    // Check if transactions are supported (requires replica set)
+    const serverInfo = await mongoose.connection.db?.admin().command({ hello: 1 });
+    const supportsTransactions = !!serverInfo?.setName;
+
+    if (supportsTransactions) {
+      session.startTransaction();
+    }
 
     try {
       // 3. Check if user already exists
       const existingUser = await User.findOne({ email }).session(session);
       if (existingUser) {
-        await session.abortTransaction();
+        if (session.inTransaction()) await session.abortTransaction();
         return NextResponse.json({ error: "User with this email already exists" }, { status: 400 });
       }
 
@@ -108,21 +115,27 @@ export async function POST(req: Request) {
       if (emailError) {
         console.error("Resend error:", emailError);
 
-        // Rollback Transaction
-        await session.abortTransaction();
+        // Rollback Transaction if active
+        if (session.inTransaction()) {
+          await session.abortTransaction();
+        }
         return NextResponse.json({ error: "Failed to send invitation email" }, { status: 500 });
       }
 
-      // Commit Transaction
-      await session.commitTransaction();
+      // Commit Transaction if active
+      if (session.inTransaction()) {
+        await session.commitTransaction();
+      }
 
       return NextResponse.json({
         message: "Invitation sent successfully",
         userId: user._id,
       });
     } catch (error) {
-      // Rollback Transaction
-      await session.abortTransaction();
+      // Rollback Transaction if active
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+      }
       throw error;
     } finally {
       // End Session
