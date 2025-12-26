@@ -39,6 +39,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: false,
       default: "",
+      minlength: [8, "Password must be at least 8 characters long"],
       select: false, // Don't return password hash by default
     },
     role: {
