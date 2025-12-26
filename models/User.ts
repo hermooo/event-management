@@ -1,5 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
+export type UserStatus = "pending" | "active";
 export type UserRole = "organizer" | "staff";
 
 export interface IUser extends Document {
@@ -8,6 +9,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: UserRole;
+  status: UserStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,7 +37,8 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: [true, "Password hash is required"],
+      required: false,
+      default: "",
       select: false, // Don't return password hash by default
     },
     role: {
@@ -43,6 +46,12 @@ const UserSchema = new Schema<IUser>(
       enum: ["organizer", "staff"],
       default: "staff",
       required: [true, "Role is required"],
+    },
+    status: {
+      type: String,
+      enum: ["pending", "active"],
+      default: "pending",
+      required: [true, "Status is required"],
     },
   },
   {
