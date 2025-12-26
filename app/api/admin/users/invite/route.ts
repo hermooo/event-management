@@ -78,13 +78,13 @@ export async function POST(req: Request) {
     const inviteLink = `${process.env.APP_URL}/setup-password?token=${rawToken}`;
 
     const { data, error } = await resend.emails.send({
-      from: "Evently <onboarding@resend.dev>", // Replace with your verified domain in production
+      from: `Evently <${process.env.RESEND_FROM_EMAIL}>`,
       to: [email],
-      subject: `You've been invited to join ${admin.name}'s team`,
+      subject: `You've been invited to join ${organization.name}`,
       react: InviteUserEmail({
         invitedByUsername: admin.name,
         invitedByEmail: admin.email,
-        teamName: "Your Organization", // You could fetch organization name here
+        teamName: organization.name,
         inviteLink,
       }),
     });
