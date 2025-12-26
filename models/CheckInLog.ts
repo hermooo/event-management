@@ -1,10 +1,10 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
 export interface ICheckInLog extends Document {
-  organizationId: string;
-  registrationId: string;
-  eventId: string;
-  staffId: string;
+  organizationId: mongoose.Types.ObjectId;
+  registrationId: mongoose.Types.ObjectId;
+  eventId: mongoose.Types.ObjectId;
+  staffId: mongoose.Types.ObjectId;
   timestamp: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -13,22 +13,22 @@ export interface ICheckInLog extends Document {
 const CheckInLogSchema = new Schema<ICheckInLog>(
   {
     organizationId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Organization ID is required"],
       ref: "Organization",
     },
     registrationId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Registration ID is required"],
       ref: "Registration",
     },
     eventId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Event ID is required"],
       ref: "Event",
     },
     staffId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Staff ID is required"],
       ref: "User",
     },

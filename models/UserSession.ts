@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
 export interface IUserSession extends Document {
-  userId: string;
+  userId: mongoose.Types.ObjectId;
   ipAddress?: string;
   deviceModel?: string;
   userAgent?: string;
@@ -13,7 +13,7 @@ export interface IUserSession extends Document {
 const UserSessionSchema = new Schema<IUserSession>(
   {
     userId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "User ID is required"],
       ref: "User",
     },

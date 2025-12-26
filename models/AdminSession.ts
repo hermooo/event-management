@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
 export interface IAdminSession extends Document {
-  adminId: string;
+  adminId: mongoose.Types.ObjectId;
   ipAddress?: string;
   deviceModel?: string;
   userAgent?: string;
@@ -13,7 +13,7 @@ export interface IAdminSession extends Document {
 const AdminSessionSchema = new Schema<IAdminSession>(
   {
     adminId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Admin ID is required"],
       ref: "Admin",
     },

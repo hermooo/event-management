@@ -4,7 +4,7 @@ export type UserStatus = "pending" | "active";
 export type UserRole = "organizer" | "staff";
 
 export interface IUser extends Document {
-  organizationId: string;
+  organizationId: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
@@ -17,7 +17,7 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>(
   {
     organizationId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Organization ID is required"],
       ref: "Organization",
     },

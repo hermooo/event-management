@@ -1,8 +1,8 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
 export interface IRegistration extends Document {
-  organizationId: string;
-  eventId: string;
+  organizationId: mongoose.Types.ObjectId;
+  eventId: mongoose.Types.ObjectId;
   name: string;
   email: string;
   checkedIn: boolean;
@@ -14,12 +14,12 @@ export interface IRegistration extends Document {
 const RegistrationSchema = new Schema<IRegistration>(
   {
     organizationId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Organization ID is required"],
       ref: "Organization",
     },
     eventId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Event ID is required"],
       ref: "Event",
     },
