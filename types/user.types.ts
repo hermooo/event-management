@@ -1,12 +1,14 @@
 export type UserRole = "organizer" | "staff";
+export type UserStatus = "pending" | "active";
 
 export interface IUser {
   _id: string;
   organizationId: string;
   name: string;
   email: string;
-  passwordHash?: string; // Optional since it's not selected by default
+  password?: string; // Optional since it's not selected by default
   role: UserRole;
+  status: UserStatus;
   createdAt: Date | string;
 }
 

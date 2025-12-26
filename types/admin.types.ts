@@ -2,7 +2,7 @@ export interface IAdmin {
   _id: string;
   name: string;
   email: string;
-  passwordHash?: string;
+  password?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }

@@ -1,13 +1,13 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface IEvent extends Document {
-  organizationId: string;
+interface IEvent extends Document {
+  organizationId: mongoose.Types.ObjectId;
   slug: string;
   title: string;
   date: Date;
   location: string;
   capacity?: number;
-  organizerId: string;
+  organizerId: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,7 +15,7 @@ export interface IEvent extends Document {
 const EventSchema = new Schema<IEvent>(
   {
     organizationId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Organization ID is required"],
       ref: "Organization",
     },
@@ -47,7 +47,7 @@ const EventSchema = new Schema<IEvent>(
       min: [1, "Capacity must be at least 1"],
     },
     organizerId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Organizer ID is required"],
       ref: "User",
     },

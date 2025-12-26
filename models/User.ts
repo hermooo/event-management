@@ -1,13 +1,15 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export type UserRole = "organizer" | "staff";
+type UserStatus = "pending" | "active";
+type UserRole = "organizer" | "staff";
 
-export interface IUser extends Document {
-  organizationId: string;
+interface IUser extends Document {
+  organizationId: mongoose.Types.ObjectId;
   name: string;
   email: string;
-  password: string;
+  password: string | null;
   role: UserRole;
+  status: UserStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,7 +17,7 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>(
   {
     organizationId: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: [true, "Organization ID is required"],
       ref: "Organization",
     },
@@ -35,7 +37,9 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: [true, "Password hash is required"],
+      required: false,
+      default: null,
+      minlength: [8, "Password must be at least 8 characters long"],
       select: false, // Don't return password hash by default
     },
     role: {
@@ -44,11 +48,23 @@ const UserSchema = new Schema<IUser>(
       default: "staff",
       required: [true, "Role is required"],
     },
+    status: {
+      type: String,
+      enum: ["pending", "active"],
+      default: "pending",
+      required: [true, "Status is required"],
+    },
   },
   {
     timestamps: true,
   }
 );
+
+UserSchema.pre("save", async function () {
+  if (this.status === "active" && !this.password) {
+    throw new Error("Active users must have a password set");
+  }
+});
 
 // Compound index for organization + email uniqueness
 UserSchema.index({ organizationId: 1, email: 1 }, { unique: true });

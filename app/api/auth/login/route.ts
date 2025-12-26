@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import dbConnect from "@/lib/mongodb";
-import { verifyPassword } from "@/lib/auth/password";
+import { verifyPassword } from "@/lib/password";
 import User from "@/models/User";
 import UserSession from "@/models/UserSession";
 import type { LoginDto, ApiResponse, IUser, IUserSession } from "@/types";
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Terminate existing sessions for this user (Single session policy)
-    await UserSession.deleteMany({ userId: user._id.toString() });
+    await UserSession.deleteMany({ userId: user._id });
 
     // Get tracking info
     const headersList = await headers();
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     const session = await UserSession.create({
-      userId: user._id.toString(),
+      userId: user._id,
       ipAddress,
       deviceModel,
       userAgent,
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           user: userWithoutPassword as unknown as IUser,
           session: {
             _id: session._id.toString(),
-            userId: session.userId,
+            userId: session.userId.toString(),
             ipAddress: session.ipAddress,
             deviceModel: session.deviceModel,
             userAgent: session.userAgent,

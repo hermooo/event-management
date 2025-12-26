@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface IOrganization extends Document {
+interface IOrganization extends Document {
   name: string;
   slug: string;
   createdAt: Date;

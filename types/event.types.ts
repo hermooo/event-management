@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface IEvent {
   _id: string;
   organizationId: string;
@@ -29,8 +31,8 @@ export interface UpdateEventDto {
 }
 
 export interface EventQueryParams {
-  organizationId?: string;
-  organizerId?: string;
+  organizationId?: mongoose.Types.ObjectId;
+  organizerId?: mongoose.Types.ObjectId;
   startDate?: string;
   endDate?: string;
   limit?: number;

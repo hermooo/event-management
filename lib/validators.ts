@@ -1,26 +1,12 @@
-import bcrypt from "bcryptjs";
+export const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+};
 
-/**
- * Hash a plain text password using bcrypt
- * @param password - Plain text password to hash
- * @returns Hashed password
- */
-export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 12; // Higher = more secure but slower (10-12 is recommended)
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  return hashedPassword;
-}
-
-/**
- * Verify a plain text password against a hashed password
- * @param password - Plain text password to verify
- * @param hashedPassword - Hashed password to compare against
- * @returns True if password matches, false otherwise
- */
-export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-  const isValid = await bcrypt.compare(password, hashedPassword);
-  return isValid;
-}
+export const validateRoles = (role: string): boolean => {
+  const validRoles = ["organizer", "staff"];
+  return validRoles.includes(role);
+};
 
 /**
  * Validate password strength
@@ -63,7 +49,7 @@ export function validatePasswordStrength(password: string): {
   // if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
   //   return {
   //     isValid: false,
-  //     error: 'Password must contain at least one special character',
+  //     error: "Password must contain at least one special character",
   //   };
   // }
 

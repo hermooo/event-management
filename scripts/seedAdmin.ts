@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/mongodb";
-import { hashPassword } from "@/lib/auth/password";
+import { hashPassword } from "@/lib/password";
 import { Admin } from "@/models";
 
 const seedAdmin = async () => {
