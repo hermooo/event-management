@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Terminate existing sessions for this user (Single session policy)
-    await UserSession.deleteMany({ userId: user._id.toString() });
+    await UserSession.deleteMany({ userId: user._id });
 
     // Get tracking info
     const headersList = await headers();
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     expiresAt.setDate(expiresAt.getDate() + 7);
 
     const session = await UserSession.create({
-      userId: user._id.toString(),
+      userId: user._id,
       ipAddress,
       deviceModel,
       userAgent,
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
         data: {
           user: userWithoutPassword as unknown as IUser,
           session: {
-            _id: session._id.toString(),
+            _id: session._id,
             userId: session.userId,
             ipAddress: session.ipAddress,
             deviceModel: session.deviceModel,

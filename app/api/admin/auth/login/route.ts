@@ -1,7 +1,7 @@
 import { verifyPassword } from "@/lib/password";
 import dbConnect from "@/lib/mongodb";
 import { Admin, AdminSession } from "@/models";
-import { AdminLoginDto, ApiResponse, IAdminSession } from "@/types";
+import { AdminLoginDto, ApiResponse, IAdmin, IAdminSession } from "@/types";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     }
 
     // Terminate existing sessions for this admin (Single session policy)
-    await AdminSession.deleteMany({ adminId: admin._id.toString() });
+    await AdminSession.deleteMany({ adminId: admin._id });
 
     // Get tracking info
     const headersList = await headers();
@@ -81,26 +81,29 @@ export async function POST(request: Request) {
     expiresAt.setDate(expiresAt.getDate() + 7); // 7 days from now
 
     const session = await AdminSession.create({
-      adminId: admin._id.toString(),
+      adminId: admin._id,
       ipAddress,
       deviceModel,
       userAgent,
       expiresAt,
     });
 
+    const adminObject = admin.toObject();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _password, ...adminWithoutPassword } = adminObject;
+
     const response = NextResponse.json<
-      ApiResponse<{ admin: { _id: string; name: string; email: string }; session: IAdminSession }>
+      ApiResponse<{
+        admin: IAdmin;
+        session: IAdminSession;
+      }>
     >(
       {
         success: true,
         data: {
-          admin: {
-            _id: admin._id.toString(),
-            name: admin.name,
-            email: admin.email,
-          },
+          admin: adminWithoutPassword as unknown as IAdmin,
           session: {
-            _id: session._id.toString(),
+            _id: session._id,
             adminId: session.adminId,
             ipAddress: session.ipAddress,
             deviceModel: session.deviceModel,
