@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import dbConnect from "@/lib/mongodb";
-import { User, InviteToken } from "@/models";
+import { User, InviteToken, Organization } from "@/models";
 import { requireAdminAuth } from "@/lib/auth/requireAdminAuth";
 import { resend } from "@/lib/resend";
 import InviteUserEmail from "@/emails/InviteUserEmail";
@@ -33,6 +33,13 @@ export async function POST(req: Request) {
 
     // OrganizationId validation
     if (!mongoose.Types.ObjectId.isValid(organizationId)) {
+      return NextResponse.json({ error: "Invalid organization ID" }, { status: 400 });
+    }
+
+    // Organization validation
+    const organization = await Organization.findById(organizationId);
+
+    if (!organization) {
       return NextResponse.json({ error: "Invalid organization ID" }, { status: 400 });
     }
 
