@@ -49,7 +49,7 @@ export async function requireUserAuth(): Promise<AuthResult> {
 
   return {
     user: userWithoutPassword as unknown as IUser,
-    organizationId: user.organizationId,
+    organizationId: user.organizationId.toString(),
     sessionId: sessionId,
   };
 }
