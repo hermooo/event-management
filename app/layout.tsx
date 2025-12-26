@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EventFlow",
+  title: "Evently",
   description:
     "Streamline event registration and attendance tracking with seamless QR code check-ins.",
 };
