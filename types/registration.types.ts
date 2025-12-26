@@ -1,9 +1,7 @@
-import mongoose from "mongoose";
-
 export interface IRegistration {
   _id: string;
-  organizationId: mongoose.Types.ObjectId;
-  eventId: mongoose.Types.ObjectId;
+  organizationId: string;
+  eventId: string;
   name: string;
   email: string;
   checkedIn: boolean;
@@ -12,15 +10,15 @@ export interface IRegistration {
 }
 
 export interface CreateRegistrationDto {
-  organizationId: mongoose.Types.ObjectId;
-  eventId: mongoose.Types.ObjectId;
+  organizationId: string;
+  eventId: string;
   name: string;
   email: string;
 }
 
 export interface RegistrationQueryParams {
-  organizationId?: mongoose.Types.ObjectId;
-  eventId?: mongoose.Types.ObjectId;
+  organizationId?: string;
+  eventId?: string;
   checkedIn?: boolean;
   limit?: number;
   page?: number;

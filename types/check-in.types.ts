@@ -1,23 +1,21 @@
-import mongoose from "mongoose";
-
 export interface ICheckInLog {
-  _id: mongoose.Types.ObjectId;
-  organizationId: mongoose.Types.ObjectId;
-  registrationId: mongoose.Types.ObjectId;
-  eventId: mongoose.Types.ObjectId;
-  staffId: mongoose.Types.ObjectId;
+  _id: string;
+  organizationId: string;
+  registrationId: string;
+  eventId: string;
+  staffId: string;
   timestamp: Date | string;
 }
 
 export interface CheckInDto {
-  registrationId: mongoose.Types.ObjectId;
-  staffId: mongoose.Types.ObjectId;
+  registrationId: string;
+  staffId: string;
 }
 
 export interface CheckInLogQueryParams {
-  organizationId?: mongoose.Types.ObjectId;
-  eventId?: mongoose.Types.ObjectId;
-  staffId?: mongoose.Types.ObjectId;
+  organizationId?: string;
+  eventId?: string;
+  staffId?: string;
   startDate?: string;
   endDate?: string;
   limit?: number;
