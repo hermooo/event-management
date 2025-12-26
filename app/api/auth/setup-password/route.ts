@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import dbConnect from "@/lib/mongodb";
 import { User, InviteToken } from "@/models";
-import { hashPassword, validatePasswordStrength } from "@/lib/auth/password";
+import { hashPassword, validatePasswordStrength } from "@/lib/password";
 
 export async function POST(req: Request) {
   try {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
-import { hashPassword, validatePasswordStrength } from "@/lib/auth/password";
+import { hashPassword, validatePasswordStrength } from "@/lib/password";
 import User from "@/models/User";
 import type { CreateUserDto, ApiResponse, IUser } from "@/types";
 

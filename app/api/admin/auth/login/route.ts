@@ -1,4 +1,4 @@
-import { verifyPassword } from "@/lib/auth/password";
+import { verifyPassword } from "@/lib/password";
 import dbConnect from "@/lib/mongodb";
 import { Admin, AdminSession } from "@/models";
 import { AdminLoginDto, ApiResponse, IAdminSession } from "@/types";

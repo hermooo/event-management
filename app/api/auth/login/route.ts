@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import dbConnect from "@/lib/mongodb";
-import { verifyPassword } from "@/lib/auth/password";
+import { verifyPassword } from "@/lib/password";
 import User from "@/models/User";
 import UserSession from "@/models/UserSession";
 import type { LoginDto, ApiResponse, IUser, IUserSession } from "@/types";
