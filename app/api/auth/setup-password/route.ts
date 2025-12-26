@@ -41,9 +41,14 @@ export async function POST(req: Request) {
     }
 
     // 4. Find user
-    const user = await User.findById(inviteToken.userId);
+    const user = await User.findById(inviteToken.userId).select("+password");
+
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (user.status === "active" || user.password) {
+      return NextResponse.json({ error: "User is already active" }, { status: 400 });
     }
 
     // 5. Update user password and status
