@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface IAdminSession extends Document {
+interface IAdminSession extends Document {
   adminId: mongoose.Types.ObjectId;
   ipAddress?: string;
   deviceModel?: string;

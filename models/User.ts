@@ -1,9 +1,9 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export type UserStatus = "pending" | "active";
-export type UserRole = "organizer" | "staff";
+type UserStatus = "pending" | "active";
+type UserRole = "organizer" | "staff";
 
-export interface IUser extends Document {
+interface IUser extends Document {
   organizationId: mongoose.Types.ObjectId;
   name: string;
   email: string;

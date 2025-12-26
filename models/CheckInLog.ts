@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface ICheckInLog extends Document {
+interface ICheckInLog extends Document {
   organizationId: mongoose.Types.ObjectId;
   registrationId: mongoose.Types.ObjectId;
   eventId: mongoose.Types.ObjectId;

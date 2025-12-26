@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface IUserSession extends Document {
+interface IUserSession extends Document {
   userId: mongoose.Types.ObjectId;
   ipAddress?: string;
   deviceModel?: string;

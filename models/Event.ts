@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface IEvent extends Document {
+interface IEvent extends Document {
   organizationId: mongoose.Types.ObjectId;
   slug: string;
   title: string;

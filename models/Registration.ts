@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model, models, Document } from "mongoose";
 
-export interface IRegistration extends Document {
+interface IRegistration extends Document {
   organizationId: mongoose.Types.ObjectId;
   eventId: mongoose.Types.ObjectId;
   name: string;
