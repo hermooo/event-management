@@ -1,5 +1,5 @@
 import ComingSoon from "@/components/coming-soon";
 
-export default function Home() {
+export default function HomePage() {
   return <ComingSoon />;
 }
