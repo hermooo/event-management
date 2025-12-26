@@ -103,8 +103,8 @@ export async function POST(request: Request) {
         data: {
           admin: adminWithoutPassword as unknown as IAdmin,
           session: {
-            _id: session._id,
-            adminId: session.adminId,
+            _id: session._id.toString(),
+            adminId: session.adminId.toString(),
             ipAddress: session.ipAddress,
             deviceModel: session.deviceModel,
             userAgent: session.userAgent,

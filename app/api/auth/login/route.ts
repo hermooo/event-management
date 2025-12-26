@@ -103,8 +103,8 @@ export async function POST(request: NextRequest) {
         data: {
           user: userWithoutPassword as unknown as IUser,
           session: {
-            _id: session._id,
-            userId: session.userId,
+            _id: session._id.toString(),
+            userId: session.userId.toString(),
             ipAddress: session.ipAddress,
             deviceModel: session.deviceModel,
             userAgent: session.userAgent,

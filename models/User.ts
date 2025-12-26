@@ -7,7 +7,7 @@ interface IUser extends Document {
   organizationId: mongoose.Types.ObjectId;
   name: string;
   email: string;
-  password: string;
+  password: string | null;
   role: UserRole;
   status: UserStatus;
   createdAt: Date;
@@ -38,7 +38,7 @@ const UserSchema = new Schema<IUser>(
     password: {
       type: String,
       required: false,
-      default: "",
+      default: null,
       minlength: [8, "Password must be at least 8 characters long"],
       select: false, // Don't return password hash by default
     },
