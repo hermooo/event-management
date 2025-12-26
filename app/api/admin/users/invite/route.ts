@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import mongoose from "mongoose";
 import dbConnect from "@/lib/mongodb";
 import { User, InviteToken } from "@/models";
 import { requireAdminAuth } from "@/lib/auth/requireAdminAuth";
 import { resend } from "@/lib/resend";
 import InviteUserEmail from "@/emails/InviteUserEmail";
+import { validateEmail, validateRoles } from "@/lib/validators";
 
 export async function POST(req: Request) {
   try {
@@ -17,6 +19,21 @@ export async function POST(req: Request) {
 
     if (!email || !name || !organizationId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Email validation
+    if (!validateEmail(email)) {
+      return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    }
+
+    // Role validation
+    if (role && !validateRoles(role)) {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
+    }
+
+    // OrganizationId validation
+    if (!mongoose.Types.ObjectId.isValid(organizationId)) {
+      return NextResponse.json({ error: "Invalid organization ID" }, { status: 400 });
     }
 
     await dbConnect();
