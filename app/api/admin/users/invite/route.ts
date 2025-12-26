@@ -36,14 +36,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid organization ID" }, { status: 400 });
     }
 
+    await dbConnect();
+
     // Organization validation
     const organization = await Organization.findById(organizationId);
 
     if (!organization) {
       return NextResponse.json({ error: "Invalid organization ID" }, { status: 400 });
     }
-
-    await dbConnect();
 
     // Start Session and Transaction
     const session = await mongoose.startSession();
