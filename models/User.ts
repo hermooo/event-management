@@ -60,6 +60,12 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
+UserSchema.pre("save", async function () {
+  if (this.status === "active" && !this.password) {
+    throw new Error("Active users must have a password set");
+  }
+});
+
 // Compound index for organization + email uniqueness
 UserSchema.index({ organizationId: 1, email: 1 }, { unique: true });
 
