@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
+
 export interface IAdmin {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   passwordHash?: string;
@@ -13,8 +15,8 @@ export interface AdminLoginDto {
 }
 
 export interface IAdminSession {
-  _id: string;
-  adminId: string;
+  _id: mongoose.Types.ObjectId;
+  adminId: mongoose.Types.ObjectId;
   ipAddress?: string;
   deviceModel?: string;
   userAgent?: string;

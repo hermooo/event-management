@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
+
 export interface IOrganization {
-  _id: string;
+  _id: mongoose.Types.ObjectId;
   name: string;
   slug: string;
   createdAt: Date | string;

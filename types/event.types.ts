@@ -1,23 +1,25 @@
+import mongoose from "mongoose";
+
 export interface IEvent {
-  _id: string;
-  organizationId: string;
+  _id: mongoose.Types.ObjectId;
+  organizationId: mongoose.Types.ObjectId;
   slug: string;
   title: string;
   date: Date | string;
   location: string;
   capacity?: number;
-  organizerId: string;
+  organizerId: mongoose.Types.ObjectId;
   createdAt: Date | string;
 }
 
 export interface CreateEventDto {
-  organizationId: string;
+  organizationId: mongoose.Types.ObjectId;
   slug: string;
   title: string;
   date: string | Date;
   location: string;
   capacity?: number;
-  organizerId: string;
+  organizerId: mongoose.Types.ObjectId;
 }
 
 export interface UpdateEventDto {
@@ -29,8 +31,8 @@ export interface UpdateEventDto {
 }
 
 export interface EventQueryParams {
-  organizationId?: string;
-  organizerId?: string;
+  organizationId?: mongoose.Types.ObjectId;
+  organizerId?: mongoose.Types.ObjectId;
   startDate?: string;
   endDate?: string;
   limit?: number;

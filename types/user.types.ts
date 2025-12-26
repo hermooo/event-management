@@ -1,9 +1,11 @@
+import mongoose from "mongoose";
+
 export type UserRole = "organizer" | "staff";
 export type UserStatus = "pending" | "active";
 
 export interface IUser {
-  _id: string;
-  organizationId: string;
+  _id: mongoose.Types.ObjectId;
+  organizationId: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password?: string; // Optional since it's not selected by default
@@ -13,8 +15,8 @@ export interface IUser {
 }
 
 export interface IUserSession {
-  _id: string;
-  userId: string;
+  _id: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   ipAddress?: string;
   deviceModel?: string;
   userAgent?: string;
@@ -23,7 +25,7 @@ export interface IUserSession {
 }
 
 export interface CreateUserDto {
-  organizationId: string;
+  organizationId: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
