@@ -1,5 +1,3 @@
-"use client";
-
 import { Rocket } from "lucide-react";
 
 export default function ComingSoon() {
@@ -11,7 +9,7 @@ export default function ComingSoon() {
         </div>
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">Coming Soon</h1>
         <p className="text-muted-foreground text-lg">
-          We're building something amazing. <br />
+          {"We're building something amazing."} <br />
           Stay tuned!
         </p>
       </div>
