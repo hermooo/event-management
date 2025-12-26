@@ -7,6 +7,7 @@ export { default as Event } from "./Event";
 export { default as Registration } from "./Registration";
 export { default as CheckInLog } from "./CheckInLog";
 export { default as AdminSession } from "./AdminSession";
+export { InviteToken } from "./InviteToken";
 
 // Export all interfaces
 export type { IAdmin } from "./Admin";
@@ -17,3 +18,4 @@ export type { IEvent } from "./Event";
 export type { IRegistration } from "./Registration";
 export type { ICheckInLog } from "./CheckInLog";
 export type { IAdminSession } from "./AdminSession";
+export type { IInviteToken } from "./InviteToken";
