@@ -45,59 +45,89 @@ export async function POST(req: Request) {
 
     await dbConnect();
 
-    // 3. Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return NextResponse.json({ error: "User with this email already exists" }, { status: 400 });
+    // Start Session and Transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      // 3. Check if user already exists
+      const existingUser = await User.findOne({ email }).session(session);
+      if (existingUser) {
+        await session.abortTransaction();
+        return NextResponse.json({ error: "User with this email already exists" }, { status: 400 });
+      }
+
+      // 4. Create Pending User
+      const [user] = await User.create(
+        [
+          {
+            email,
+            name,
+            role: role || "staff",
+            organizationId,
+            status: "pending",
+          },
+        ],
+        { session }
+      );
+
+      // 5. Generate Invite Token
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+      // 6. Save Token to DB (expires in 48 hours)
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 48);
+
+      await InviteToken.create(
+        [
+          {
+            userId: user._id,
+            tokenHash,
+            expiresAt,
+          },
+        ],
+        { session }
+      );
+
+      // 7. Send Invitation Email
+      const inviteLink = `${process.env.APP_URL}/setup-password?token=${rawToken}`;
+
+      const { data, error: emailError } = await resend.emails.send({
+        from: `Evently <${process.env.RESEND_FROM_EMAIL}>`,
+        to: [email],
+        subject: `You've been invited to join ${organization.name}`,
+        react: InviteUserEmail({
+          invitedByUsername: admin.name,
+          invitedByEmail: admin.email,
+          teamName: organization.name,
+          inviteLink,
+        }),
+      });
+
+      if (emailError) {
+        console.error("Resend error:", emailError);
+
+        // Rollback Transaction
+        await session.abortTransaction();
+        return NextResponse.json({ error: "Failed to send invitation email" }, { status: 500 });
+      }
+
+      // Commit Transaction
+      await session.commitTransaction();
+
+      return NextResponse.json({
+        message: "Invitation sent successfully",
+        userId: user._id,
+      });
+    } catch (error) {
+      // Rollback Transaction
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      // End Session
+      session.endSession();
     }
-
-    // 4. Create Pending User
-    const user = await User.create({
-      email,
-      name,
-      role: role || "staff",
-      organizationId,
-      status: "pending",
-    });
-
-    // 5. Generate Invite Token
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
-
-    // 6. Save Token to DB (expires in 48 hours)
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 48);
-
-    await InviteToken.create({
-      userId: user._id,
-      tokenHash,
-      expiresAt,
-    });
-
-    // 7. Send Invitation Email
-    const inviteLink = `${process.env.APP_URL}/setup-password?token=${rawToken}`;
-
-    const { data, error } = await resend.emails.send({
-      from: `Evently <${process.env.RESEND_FROM_EMAIL}>`,
-      to: [email],
-      subject: `You've been invited to join ${organization.name}`,
-      react: InviteUserEmail({
-        invitedByUsername: admin.name,
-        invitedByEmail: admin.email,
-        teamName: organization.name,
-        inviteLink,
-      }),
-    });
-
-    if (error) {
-      console.error("Resend error:", error);
-      return NextResponse.json({ error: "Failed to send invitation email" }, { status: 500 });
-    }
-
-    return NextResponse.json({
-      message: "Invitation sent successfully",
-      userId: user._id,
-    });
   } catch (error: unknown) {
     console.error("Invite error:", error);
     if (error instanceof Error) {
