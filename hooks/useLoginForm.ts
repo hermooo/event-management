@@ -1,3 +1,4 @@
+import { validateEmail } from "@/lib/validators";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -15,6 +16,18 @@ export function useLoginForm(apiEndpoint: string, redirectPath: string) {
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      setLoading(false);
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email");
+      setLoading(false);
+      return;
+    }
 
     try {
       const controller = new AbortController();
