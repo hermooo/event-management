@@ -11,6 +11,7 @@ export function proxy(request: NextRequest) {
     pathname === "/login" ||
     pathname === "/register" ||
     pathname === "/admin/login" ||
+    pathname === "/setup-password" ||
     pathname.startsWith("/events/register");
 
   // Define protected routes

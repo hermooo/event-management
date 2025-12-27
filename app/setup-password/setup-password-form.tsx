@@ -1,24 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function SetupPasswordForm() {
+interface SetupPasswordFormProps {
+  token: string;
+}
+
+export default function SetupPasswordForm({ token }: SetupPasswordFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    if (!token) {
-      setError("Invalid or missing invitation token.");
-    }
-  }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

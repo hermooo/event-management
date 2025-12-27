@@ -1,5 +1,11 @@
 import ComingSoon from "@/components/coming-soon";
 
-export default function HomePage() {
-  return <ComingSoon />;
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+
+  return <ComingSoon error={error} />;
 }

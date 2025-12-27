@@ -1,6 +1,17 @@
+"use client";
 import { Rocket } from "lucide-react";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
-export default function ComingSoon() {
+export default function ComingSoon({ error }: { error?: string }) {
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        toast.error("Invalid token");
+      }, 0);
+    }
+  }, [error]);
+
   return (
     <div className="bg-background relative flex min-h-screen items-center justify-center overflow-hidden p-4">
       <div className="space-y-6 text-center">
