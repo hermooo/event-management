@@ -38,6 +38,7 @@ export function useLoginForm(apiEndpoint: string, redirectPath: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
         signal: controller.signal,
+        credentials: "include",
       });
 
       clearTimeout(timeoutId);
