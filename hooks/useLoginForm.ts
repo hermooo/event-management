@@ -31,7 +31,7 @@ export function useLoginForm(apiEndpoint: string, redirectPath: string) {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const response = await fetch(apiEndpoint, {
         method: "POST",
@@ -55,7 +55,17 @@ export function useLoginForm(apiEndpoint: string, redirectPath: string) {
 
       router.push(redirectPath);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again");
+      if (!(err instanceof Error)) {
+        setError("Something went wrong. Please try again");
+        return;
+      }
+
+      if (err.name === "AbortError") {
+        setError("Request timed out. Please try again");
+        return;
+      }
+
+      setError(err.message);
     } finally {
       setLoading(false);
     }
