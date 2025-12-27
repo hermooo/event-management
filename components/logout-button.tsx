@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LogOut, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface LogoutButtonProps {
   userType?: "user" | "admin";
@@ -18,16 +19,28 @@ export function LogoutButton({ userType = "user", className }: LogoutButtonProps
     setLoading(true);
     try {
       const endpoint = userType === "admin" ? "/api/admin/auth/logout" : "/api/auth/logout";
-      await fetch(endpoint, {
+      const res = await fetch(endpoint, {
         method: "POST",
       });
+
+      const { data, error } = await res.json();
+
+      if (!res.ok) {
+        toast.error(error);
+      }
+
+      if (data) {
+        toast.success(data.message);
+      }
 
       // Redirect to login page
       const loginPath = userType === "admin" ? "/admin/login" : "/login";
       router.push(loginPath);
-      router.refresh();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Logout failed", error);
+      toast.error(
+        error instanceof Error ? error.message : "Logout failed. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
