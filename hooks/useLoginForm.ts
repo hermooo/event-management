@@ -1,6 +1,7 @@
 import { validateEmail } from "@/lib/validators";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 // hooks/useLoginForm.ts
 export function useLoginForm(apiEndpoint: string, redirectPath: string) {
@@ -53,6 +54,10 @@ export function useLoginForm(apiEndpoint: string, redirectPath: string) {
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong");
       }
+
+      toast.success("Login successful!");
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       router.push(redirectPath);
     } catch (err: unknown) {
