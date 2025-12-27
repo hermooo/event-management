@@ -27,6 +27,7 @@ export function LogoutButton({ userType = "user", className }: LogoutButtonProps
 
       if (!res.ok) {
         toast.error(error);
+        return;
       }
 
       if (data) {
