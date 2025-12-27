@@ -1,7 +1,15 @@
 import { LogoutButton } from "@/components/logout-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { isAuthenticated } from "@/lib/auth/requireAuth";
+import { redirect } from "next/navigation";
 
-export default function UserDashboard() {
+export default async function UserDashboard() {
+  const authenticated = await isAuthenticated();
+
+  if (!authenticated) {
+    return redirect("/login");
+  }
+
   return (
     <div className="bg-background min-h-screen p-8">
       <div className="mx-auto max-w-4xl space-y-8">

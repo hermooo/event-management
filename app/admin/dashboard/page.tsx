@@ -1,7 +1,15 @@
 import { LogoutButton } from "@/components/logout-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { isAdminAuthenticated } from "@/lib/auth/requireAdminAuth";
+import { redirect } from "next/navigation";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  const authenticated = await isAdminAuthenticated();
+
+  if (!authenticated) {
+    return redirect("/admin/login");
+  }
+
   return (
     <div className="bg-background min-h-screen p-8">
       <div className="mx-auto max-w-4xl space-y-8">
